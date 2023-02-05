@@ -351,6 +351,8 @@ print ("code is running!")
 
 #USGS BIML dataset from https://doi.org/10.15468/dl.2e5ugx
 allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode')
+#allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+
 print ("file successfully read in!")
 
 #convert years to numeric and assign to a new column

@@ -60,21 +60,49 @@ def write_csv(filename, data):
 
 
 def pre_post_2010(dataframe, species_name):
-    """Given a species name, itreturns the pre and post 2010 numbers of it, Aka up to 2009, and then 2010 and onwards"""
+    """Given a species name, it returns the pre and post 2010 numbers of it, Aka up to 2009, and then 2010 and onwards"""
     allbees = dataframe
     
-    #step 1: get all the records of a given bee
+    #step 1: get all the records of a given bee 
     species = allbees[allbees['name'] == species_name]
+    
+    #step 1.5: find the mimimum year, aka the earlier this species waas found in the dataset
+    minyear = species['year_numbers'].min()
     
     #step 2: count all the pre 2010 records
     pre2010 = species[species['year_numbers'] < 2010]
+    
+    #step 2.5: adding in the pre 2008 records, so that we can look at the breakdown of pre-2008 vs 2008-2009
+    #pre2008 = species[species['year_numbers'] < 2008]
+    
     
     #step 3: count all the records 2010 and after
     post2010 = species[species['year_numbers'] > 2009]
     
     #return the counts of pre and post 2010
-    return pre2010.shape[0], post2010.shape[0]
+    #return pre2010.shape[0], post2010.shape[0], minyear, pre2008.shape[0] # old thing for step 2.5, put in wrong place
+    return pre2010.shape[0], post2010.shape[0], minyear
 
+def pre_post_2008(dataframe, species_name):
+    """Given a species name, it returns the pre and post 2008 numbers of it, Aka up to 2007, and then 2008 and onwards"""
+    #just doing this to explore how the newly described species from before 2010 tend to be clumped in 2008 and 2009 rather than earlier
+    allbees = dataframe
+    
+    #step 1: get all the records of a given bee 
+    species = allbees[allbees['name'] == species_name]
+    
+    #step 1.5: find the mimimum year, aka the earlier this species waas found in the dataset
+    minyear = species['year_numbers'].min()
+    
+    #step 2: count all the pre 2008 records
+    pre2008 = species[species['year_numbers'] < 2008]
+    
+    #step 3: count all the records 2008 and after
+    post2008 = species[species['year_numbers'] > 2007]
+    
+    #return the counts of pre and post 2010
+    #return pre2010.shape[0], post2010.shape[0], minyear, pre2008.shape[0] # old thing for step 2.5, put in wrong place
+    return pre2008.shape[0], post2008.shape[0], minyear
 
 
 def pre_post_encapsulator(allbees):
@@ -150,6 +178,21 @@ def overall_stats_encapsulator(allbees):
     print ("pre 2010 species newly describe total:", pre_2010_described)
     print ("post 2010 species newly described total:", post_2010_described)
         #write_csv("pre_post", [bee, results[0], results[1]])        
+    
+    
+    pre_2008_described = 0
+    post_2008_described = 0
+    #Let's do all species newly described or reinstated by Gibbs 2010 or 2011
+    all_Lasio_desc_Gibbs = ALL_species_described_Gibbs_2010 + ALL_species_described_Gibbs_2011
+    for bee in all_Lasio_desc_Gibbs:
+        bee = "Lasioglossum " + bee
+        results = pre_post_2008(allbees, bee)
+        pre_2008_described += int(results[0])
+        post_2008_described += int(results[1])        
+        
+    print ("pre 2008 species newly describe total:", pre_2008_described)
+    print ("post 2008 species newly described total:", post_2008_described)    
+    
     
     
     #So then need to calcualt proprtion that are invalid....
