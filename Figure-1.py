@@ -29,6 +29,29 @@ def count_by_year(allbees, year1, year2, species_name):
     
     return species_summary
 
+def female_count_by_year(allbees, year1, year2, species_name):
+    ###Given a start year, end year (inclusive), and species name, return a table of the counts of that bee per year    FOR FEMALES ONLY
+    
+    #step 1: get all the records of a given bee
+    species = allbees[allbees['name'] == species_name]
+    
+    #step 1.5: reduce that to females
+    species = species[species['sex'] == "female"]
+    
+    #step 2: get the index of counts
+    species_summary = species['year_numbers'].value_counts()
+    
+    #step 3: fill in the zero years
+    year_list = list(range(year1, year2+1))
+    for year in year_list:
+        if year not in species_summary:
+            species_summary.loc[year] = 0    
+            
+    #sort the year summary
+    species_summary = species_summary.sort_index()
+    
+    return species_summary
+
 #graph colors: stats dataset is 'rebeccapurple', GBIF is brown, and mid atlantic dataset is #1f77b4
 
 
@@ -52,11 +75,13 @@ allbees['year_numbers'] = pd.to_numeric(allbees['year'], errors = 'coerce')
 
 
 
-Ag_virescens = count_by_year(allbees, 2002, 2016, "Agapostemon virescens") #This is for mid atlantic dataset
+Ca_strenua = count_by_year(allbees, 2002, 2016, "Ceratina strenua") #This is for mid atlantic dataset
 La_coreopsis = count_by_year(allbees, 2002, 2016, "Lasioglossum coreopsis") #This is for mid atlantic dataset
 Au_aurata = count_by_year(allbees, 2002, 2016, "Augochlorella aurata") #This is for mid atlantic dataset
 
 C_calcarata_atlantic = count_by_year(allbees, 2002, 2016, "Ceratina calcarata") #This is for mid atlantic dataset
+female_C_calcarata_atlantic = female_count_by_year(allbees, 2002, 2016, "Ceratina calcarata") #This is for mid atlantic dataset
+
 C_dupla_atlantic = count_by_year(allbees, 2002, 2016, "Ceratina dupla") #This is for mid atlantic dataset
 C_mikmaqi_atlantic = count_by_year(allbees, 2002, 2016, "Ceratina mikmaqi") #This is for mid atlantic dataset
 
@@ -76,13 +101,13 @@ ax0[0,0].set_xticklabels([2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 
 ax0[0,0].set_ylabel('# Records', fontsize=13)
 ax0[0,0].set_title('All Mid-Atlantic bees', y=1, pad = 2)
 
-#add viresens to zero
+#add virescens to zero
 ax0[1,0].set_xticks(list(range(2002, 2017)))
 ax0[1,0].tick_params(axis='x', labelrotation=45)
 ax0[1,0].set_xticklabels([2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016], ha='right', minor=False, rotation_mode='anchor')
 ax0[1,0].set_ylabel('# Records', fontsize=13)
-ax0[1,0].set_title('Mid-Atlantic Ag. virescens', y=1, pad = 2)
-ax0[1,0].bar(Ag_virescens.index, Ag_virescens.tolist(), color='#1f77b4')
+ax0[1,0].set_title('Mid-Atlantic C. strenua', y=1, pad = 2)
+ax0[1,0].bar(Ca_strenua.index, Ca_strenua.tolist(), color='#1f77b4')
 
 #add coreopsis to zero
 ax0[2,0].set_xticks(list(range(2002, 2017)))
@@ -105,6 +130,7 @@ ax1[0,0].set_xticklabels([2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 
 ax1[0,0].set_ylabel('# Records', fontsize=13)
 ax1[0,0].set_title('Mid-Atlantic C. calcarata', y=1, pad = 2)
 ax1[0,0].bar(C_calcarata_atlantic.index, C_calcarata_atlantic.tolist(), color='#1f77b4')
+#ax1[0,0].bar(female_C_calcarata_atlantic.index, female_C_calcarata_atlantic.tolist(), color='gray') #overlay ust the female data
 
 ax1[1,0].set_xticks(list(range(2002, 2017)))
 ax1[1,0].tick_params(axis='x', labelrotation=45)
@@ -243,14 +269,14 @@ anthro_trigeminum = count_by_year(allbees, 2001, 2015, "Lasioglossum trigeminum"
 anthro_floridanum = count_by_year(allbees, 2001, 2015, "Lasioglossum floridanum") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 anthro_leucocomum = count_by_year(allbees, 2001, 2015, "Lasioglossum leucocomum") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 
-# The "oftenn misidentified" Lasioglossum species
+# The "often misidentified" Lasioglossum species
 anthro_abanci = count_by_year(allbees, 2001, 2015, "Lasioglossum abanci") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 anthro_admirandum = count_by_year(allbees, 2001, 2015, "Lasioglossum near_admirandum") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 anthro_oblongum = count_by_year(allbees, 2001, 2015, "Lasioglossum oblongum") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 anthro_versatum = count_by_year(allbees, 2001, 2015, "Lasioglossum versatum") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 
 # Consistent taxonomy species for figure 1
-anthro_virescens = count_by_year(allbees, 2001, 2015, "Agapostemon virescens") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
+anthro_strenua = count_by_year(allbees, 2001, 2015, "Ceratina strenua") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 anthro_aurata = count_by_year(allbees, 2001, 2015, "Augochlorella aurata") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 anthro_coreopsis = count_by_year(allbees, 2001, 2015, "Lasioglossum coreopsis") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 
@@ -269,8 +295,8 @@ ax0[0,1].set_title('All Anthropogenic bees', y=1, pad = 2)
 ax0[1,1].set_xticks(list(range(2001, 2016)))
 ax0[1,1].tick_params(axis='x', labelrotation=45)
 ax0[1,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014, ''], ha='right', minor=False, rotation_mode='anchor')
-ax0[1,1].set_title('Anthropogenic Ag. virescens', y=1, pad = 2)
-ax0[1,1].bar(anthro_virescens.index, anthro_virescens.tolist(), color='rebeccapurple')
+ax0[1,1].set_title('Anthropogenic C. strenua', y=1, pad = 2)
+ax0[1,1].bar(anthro_strenua.index, anthro_strenua.tolist(), color='rebeccapurple')
 
 #add coreopsis to zero (Figure 1)
 ax0[2,1].set_xticks(list(range(2001, 2016)))
@@ -350,8 +376,8 @@ print ("code is running!")
 ## column headers: gbifID	datasetKey	occurrenceID	kingdom	phylum	class	order	family	genus	species	infraspecificEpithet	taxonRank	scientificName	verbatimScientificName	verbatimScientificNameAuthorship	countryCode	locality	stateProvince	occurrenceStatus	individualCount	publishingOrgKey	decimalLatitude	decimalLongitude	coordinateUncertaintyInMeters	coordinatePrecision	elevation	elevationAccuracy	depth	depthAccuracy	eventDate	day	month	year	taxonKey	speciesKey	basisOfRecord	institutionCode	collectionCode	catalogNumber	recordNumber	identifiedBy	dateIdentified	license	rightsHolder	recordedBy	typeStatus	establishmentMeans	lastInterpreted	mediaType	issue
 
 #USGS BIML dataset from https://doi.org/10.15468/dl.2e5ugx
-allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode')
-#allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+#allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
 
 print ("file successfully read in!")
 
@@ -374,20 +400,20 @@ excluded = allbees[allbees['year_numbers'] < 2001] # want to count the number of
 print ("Number of excluded pre 2001 BIML GBIF records:", len(excluded.index))
 allbees = allbees[allbees['year_numbers'] > 2000] 
 
-#filtering out all years over 2018 cuz there are only 47
+#filtering out all years over 2018 cuz there are only 47 -- updating to over 2022 with new 2023 gbif data file
 excluded = allbees[allbees['year_numbers'] > 2018] # want to count the number of excluded records
 print ("Number of excluded post 2018 BIML GBIF records:", len(excluded.index))
-allbees = allbees[allbees['year_numbers'] < 2019] 
+allbees = allbees[allbees['year_numbers'] < 2023] 
 
 print(allbees.head())
 print ("Number of BIML GBIF records remaining after filtering:", len(allbees.index))
 
 
-gbif_ephialtum = count_by_year(allbees, 2001, 2018, "Lasioglossum ephialtum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_gotham = count_by_year(allbees, 2001, 2018, "Lasioglossum gotham") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_trigeminum = count_by_year(allbees, 2001, 2018, "Lasioglossum trigeminum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_floridanum = count_by_year(allbees, 2001, 2018, "Lasioglossum floridanum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_leucocomum = count_by_year(allbees, 2001, 2018, "Lasioglossum leucocomum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_ephialtum = count_by_year(allbees, 2001, 2022, "Lasioglossum ephialtum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_gotham = count_by_year(allbees, 2001, 2022, "Lasioglossum gotham") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_trigeminum = count_by_year(allbees, 2001, 2022, "Lasioglossum trigeminum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_floridanum = count_by_year(allbees, 2001, 2022, "Lasioglossum floridanum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_leucocomum = count_by_year(allbees, 2001, 2022, "Lasioglossum leucocomum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
 
 print (gbif_floridanum)
 species = allbees[allbees['name'] =="Lasioglossum floridanum"]
@@ -396,20 +422,22 @@ species.to_csv('floridaum.csv')
 
 
 
-gbif_abanci = count_by_year(allbees, 2001, 2018, "Lasioglossum abanci") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_admirandum = count_by_year(allbees, 2001, 2018, "Lasioglossum admirandum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_oblongum = count_by_year(allbees, 2001, 2018, "Lasioglossum oblongum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_versatum = count_by_year(allbees, 2001, 2018, "Lasioglossum versatum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_abanci = count_by_year(allbees, 2001, 2022, "Lasioglossum abanci") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_admirandum = count_by_year(allbees, 2001, 2022, "Lasioglossum admirandum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_oblongum = count_by_year(allbees, 2001, 2022, "Lasioglossum oblongum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_versatum = count_by_year(allbees, 2001, 2022, "Lasioglossum versatum") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
 
 # The taxonomic consistent species for figure 1
-gbif_virescens = count_by_year(allbees, 2001, 2018, "Agapostemon virescens") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_aurata = count_by_year(allbees, 2001, 2018, "Augochlorella aurata") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_coreopsis = count_by_year(allbees, 2001, 2018, "Lasioglossum coreopsis") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_strenua = count_by_year(allbees, 2001, 2022, "Ceratina strenua") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_aurata = count_by_year(allbees, 2001, 2022, "Augochlorella aurata") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_coreopsis = count_by_year(allbees, 2001, 2022, "Lasioglossum coreopsis") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
 
 #Ceratina species
-gbif_calcarata = count_by_year(allbees, 2001, 2018, "Ceratina calcarata") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_dupla = count_by_year(allbees, 2001, 2018, "Ceratina dupla") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_mikmaqi = count_by_year(allbees, 2001, 2018, "Ceratina mikmaqi") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+
+gbif_calcarata = count_by_year(allbees, 2001, 2022, "Ceratina calcarata") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+#gbif_calcarata_females = female_count_by_year(allbees, 2001, 2022, "Ceratina calcarata") #wah, there isn'a female/male column in this data waaahhh
+gbif_dupla = count_by_year(allbees, 2001, 2022, "Ceratina dupla") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_mikmaqi = count_by_year(allbees, 2001, 2022, "Ceratina mikmaqi") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
 
 
 
@@ -417,101 +445,101 @@ gbif_mikmaqi = count_by_year(allbees, 2001, 2018, "Ceratina mikmaqi") #This is t
 gbif_bees_per_year = allbees['year_numbers'].value_counts()
 print ("GBIF BEES PER YEAR", gbif_bees_per_year)
 ax0[0,2].bar(gbif_bees_per_year.index, gbif_bees_per_year.tolist(), color='brown')
-ax0[0,2].set_xticks(list(range(2001, 2019)))
+ax0[0,2].set_xticks(list(range(2001, 2023)))
 ax0[0,2].tick_params(axis='x', labelrotation=45)
-ax0[0,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor')
+ax0[0,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
 ax0[0,2].set_title('All BIML GBIF bees', y=1, pad = 2)
 
-#add virescens to zero (Figure 1)
-ax0[1,2].set_xticks(list(range(2001, 2019)))
+#add Ceratina strenua to zero (Figure 1)
+ax0[1,2].set_xticks(list(range(2001, 2023)))
 ax0[1,2].tick_params(axis='x', labelrotation=45)
-ax0[1,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor')
-ax0[1,2].set_title('BIML GBIF Ag. virescens', y=1, pad = 2)
-ax0[1,2].bar(gbif_virescens.index, gbif_virescens.tolist(), color='brown')
+ax0[1,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
+ax0[1,2].set_title('BIML GBIF C. strenua', y=1, pad = 2)
+ax0[1,2].bar(gbif_strenua.index, gbif_strenua.tolist(), color='brown')
 
 #add coreopsis to zero (Figure 1)
-ax0[2,2].set_xticks(list(range(2001, 2019)))
+ax0[2,2].set_xticks(list(range(2001, 2023)))
 ax0[2,2].tick_params(axis='x', labelrotation=45)
-ax0[2,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor')
+ax0[2,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
 ax0[2,2].set_title('BIML GBIF L. coreopsis', y=1, pad = 2)
 ax0[2,2].bar(gbif_coreopsis.index, gbif_coreopsis.tolist(), color='brown')
 
 
 #add C. calcarata to Figure 2
-ax1[0,1].set_xticks(list(range(2001, 2019)))
+ax1[0,1].set_xticks(list(range(2001, 2023)))
 ax1[0,1].tick_params(axis='x', labelrotation=45)
-ax1[0,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor')
+ax1[0,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
 ax1[0,1].set_title('BIML GBIF C. calcarata', y=1, pad = 2)
 ax1[0,1].bar(gbif_calcarata.index, gbif_calcarata.tolist(), color='brown')
 
 #add C. dupla to Figure 2
-ax1[1,1].set_xticks(list(range(2001, 2019)))
+ax1[1,1].set_xticks(list(range(2001, 2023)))
 ax1[1,1].tick_params(axis='x', labelrotation=45)
-ax1[1,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor')
+ax1[1,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
 ax1[1,1].set_title('BIML GBIF C. dupla', y=1, pad = 2)
 ax1[1,1].bar(gbif_dupla.index, gbif_dupla.tolist(), color='brown')
 
 #add C. mikmaqi to Figure 2
-ax1[2,1].set_xticks(list(range(2001, 2019)))
+ax1[2,1].set_xticks(list(range(2001, 2023)))
 ax1[2,1].tick_params(axis='x', labelrotation=45)
-ax1[2,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor')
+ax1[2,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
 ax1[2,1].set_title('BIML GBIF C. mikmaqi', y=1, pad = 2)
 ax1[2,1].bar(gbif_mikmaqi.index, gbif_mikmaqi.tolist(), color='brown')
 
 
 
-ax2[0, 2].set_xticks(list(range(2001, 2019)))
+ax2[0, 2].set_xticks(list(range(2001, 2023)))
 ax2[0, 2].tick_params(axis='x', labelrotation=45)
-ax2[0, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax2[0, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax2[0, 2].set_title('L. ephialtum - BIML GBIF', y=1, pad = 2)
 ax2[0, 2].bar(gbif_ephialtum.index, gbif_ephialtum.tolist(), color='brown')
 
-ax2[1, 2].set_xticks(list(range(2001, 2019)))
+ax2[1, 2].set_xticks(list(range(2001, 2023)))
 ax2[1, 2].tick_params(axis='x', labelrotation=45)
-ax2[1, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax2[1, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax2[1, 2].set_title('L. gotham - BIML GBIF', y=1, pad = 2)
 ax2[1, 2].bar(gbif_gotham.index, gbif_gotham.tolist(), color='brown')
 
-ax2[2, 2].set_xticks(list(range(2001, 2019)))
+ax2[2, 2].set_xticks(list(range(2001, 2023)))
 ax2[2, 2].tick_params(axis='x', labelrotation=45)
-ax2[2, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax2[2, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax2[2, 2].set_title('L. trigeminum - BIML GBIF', y=1, pad = 2)
 ax2[2, 2].bar(gbif_trigeminum.index, gbif_trigeminum.tolist(), color='brown')
 
-ax2[3, 2].set_xticks(list(range(2001, 2019)))
+ax2[3, 2].set_xticks(list(range(2001, 2023)))
 ax2[3, 2].tick_params(axis='x', labelrotation=45)
-ax2[3, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax2[3, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax2[3, 2].set_title('L. floridanum - BIML GBIF', y=1, pad = 2)
 ax2[3, 2].bar(gbif_floridanum.index, gbif_floridanum.tolist(), color='brown')
 
-ax2[4, 2].set_xticks(list(range(2001, 2019)))
+ax2[4, 2].set_xticks(list(range(2001, 2023)))
 ax2[4, 2].tick_params(axis='x', labelrotation=45)
-ax2[4, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax2[4, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax2[4, 2].set_title('L. leucocomum - BIML GBIF', y=1, pad = 2)
 ax2[4, 2].bar(gbif_leucocomum.index, gbif_leucocomum.tolist(), color='brown')
 
 
-ax3[0, 2].set_xticks(list(range(2001, 2019)))
+ax3[0, 2].set_xticks(list(range(2001, 2023)))
 ax3[0, 2].tick_params(axis='x', labelrotation=45)
-ax3[0, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax3[0, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax3[0, 2].set_title('L. abanci - BIML GBIF', y=1, pad = 2)
 ax3[0, 2].bar(gbif_abanci.index, gbif_abanci.tolist(), color='brown')
 
-ax3[1, 2].set_xticks(list(range(2001, 2019)))
+ax3[1, 2].set_xticks(list(range(2001, 2023)))
 ax3[1, 2].tick_params(axis='x', labelrotation=45)
-ax3[1, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax3[1, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax3[1, 2].set_title('L. admirandum - BIML GBIF', y=1, pad = 2)
 ax3[1, 2].bar(gbif_admirandum.index, gbif_admirandum.tolist(), color='brown')
 
-ax3[2, 2].set_xticks(list(range(2001, 2019)))
+ax3[2, 2].set_xticks(list(range(2001, 2023)))
 ax3[2, 2].tick_params(axis='x', labelrotation=45)
-ax3[2, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax3[2, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax3[2, 2].set_title('L. oblongum - BIML GBIF', y=1, pad = 2)
 ax3[2, 2].bar(gbif_oblongum.index, gbif_oblongum.tolist(), color='brown')
 
-ax3[3, 2].set_xticks(list(range(2001, 2019)))
+ax3[3, 2].set_xticks(list(range(2001, 2023)))
 ax3[3, 2].tick_params(axis='x', labelrotation=45)
-ax3[3, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
+ax3[3, 2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor', fontsize=8)
 ax3[3, 2].set_title('L. versatum - BIML GBIF', y=1, pad = 2)
 ax3[3, 2].bar(gbif_versatum.index, gbif_versatum.tolist(), color='brown')
 
