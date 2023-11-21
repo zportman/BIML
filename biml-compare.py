@@ -47,7 +47,23 @@ changed_counts.to_csv('changed_counts_biml.csv')
 #test.to_csv('out-datos-11.csv')
 
 
+#now let's check i any records were removed from the 2022 data in the 2023 data. 
+#df = pd.merge(biml_2022, biml_2023, on="occurrenceID", how="left")
+
+only_2022 = biml_2022[~biml_2022["occurrenceID"].isin(biml_2023["occurrenceID"])]
+
+print (only_2022.head())
+
+print (len(only_2022))
+only_2022.to_csv('only_2022.csv')
+
+species_counts = only_2022['species'].value_counts()
+print (species_counts)
+species_counts.to_csv('only_2022_species.csv')
+
+
+
 #dig into the Osmia collinsiae changed
-osmia_collinsiae = test[test["species_x"] == "Lasioglossum admirandum"]
-osmia_collinsiae.head()
-osmia_collinsiae.to_csv('changed-Lasioglossum_admirandum.csv')
+#osmia_collinsiae = test[test["species_x"] == "Lasioglossum admirandum"]
+#osmia_collinsiae.head()
+#osmia_collinsiae.to_csv('changed-Lasioglossum_admirandum.csv')
