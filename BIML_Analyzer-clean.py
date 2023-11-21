@@ -79,6 +79,10 @@ def pre_post_2010(dataframe, species_name):
     #step 3: count all the records 2010 and after
     post2010 = species[species['year_numbers'] > 2009]
     
+    #sneak in a little code here to get the values by year just for manual sanity checking
+    ###bee_per_year = species['year_numbers'].value_counts().sort_index()
+    ###print (species_name, bee_per_year)    
+    
     #return the counts of pre and post 2010
     #return pre2010.shape[0], post2010.shape[0], minyear, pre2008.shape[0] # old thing for step 2.5, put in wrong place
     return pre2010.shape[0], post2010.shape[0], minyear
@@ -277,6 +281,7 @@ print ("code is running! beep boop")
 allbees = pd.read_csv("1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
 print ("file successfully read in!")
 print ("Mid-Atlantic bees dataset")
+print ("Number of Mid-Atlantic bees records in dataset:", len(allbees.index))
 
 
 #convert years to numeric and assign to a new column
@@ -290,7 +295,7 @@ with open("pre_post.csv", "w", newline='') as fp:
     writer.writerow(["Species", "records 2002-2009", "records 2010-2016"])  # write header
 
 
-# Running the pre-post stuffo on the Kammerer dataset
+# Running the pre-post stuffo on the Mid-Atlantic Bees dataset
 pre_post_encapsulator(allbees)
 
 # then run all the general stats
@@ -298,7 +303,7 @@ overall_stats_encapsulator(allbees)
     
     
 
-#ok now we move onto the datos dataset
+#ok now we move onto the Anthropogenic Bees dataset
     
 allbees = pd.read_csv("Datos1.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
 print ("file successfully read in!")
@@ -316,6 +321,7 @@ allbees.rename(columns={"gen_sp":"name"}, inplace=True)
 #filtering out all years lower than 2001 because they are messing up my graphs and there are like 10 records
 allbees = allbees[allbees['year_numbers'] > 2000] 
 
+print ("Number of Anthropogenic bees records after filtering:", len(allbees.index))
 
 
 #open output file, this time append so to not wipe previous stu
@@ -325,7 +331,7 @@ with open("pre_post.csv", "a", newline='') as fp:
     writer.writerow(["Species", "records 2002-2009", "records 2010-20XX"])  # write header
 
 
-# Running the pre-post stuffo on the Kammerer dataset
+# Running the pre-post stuffo on the Mid-Atlantic bees dataset
 pre_post_encapsulator(allbees)
 
 # then run all the general stats
@@ -343,11 +349,14 @@ print ("code is running!")
 #                               'another_number', 'same_number_again', 'preserved_specimen', 'bison', 'inst_code',  'event_and_DRO_num', 'an', 'collector', 'ID_date',
 #                               'cc', 'ar', 'identifier', 'au', 'time','geode' ])
 #USGS BIML dataset from https://doi.org/10.15468/dl.2e5ugx
-allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode')
+#allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #old 2022 biml dataset
+allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+
 print ("file successfully read in!")
 print ("GBIF dataset")
 
 print (allbees.head())
+print ("Number of BIML GBIF raw records in dataset:", len(allbees.index))
 
 
 #convert years to numeric and assign to a new column
@@ -367,12 +376,12 @@ excluded = allbees[allbees['year_numbers'] < 2001] # want to count the number of
 print ("Number of excluded pre 2001 BIML GBIF records:", len(excluded.index))
 allbees = allbees[allbees['year_numbers'] > 2000] 
 
-#filtering out all years over 2018 cuz there are only 47
-excluded = allbees[allbees['year_numbers'] > 2018] # want to count the number of excluded records
-print ("Number of excluded post 2018 BIML GBIF records:", len(excluded.index))
-allbees = allbees[allbees['year_numbers'] < 2019] 
+#filtering out all years over 2018 cuz there are only 47 -- updating to all years over 2022 with new dataset
+excluded = allbees[allbees['year_numbers'] > 2022] # want to count the number of excluded records
+print ("Number of excluded post 2022 BIML GBIF records:", len(excluded.index))
+allbees = allbees[allbees['year_numbers'] < 2022] 
 
-print(allbees.head())
+#print(allbees.head())
 print ("Number of BIML GBIF records remaining after filtering:", len(allbees.index))
 
 
