@@ -68,7 +68,7 @@ bee_genera = ['Agapanthinus', 'Agapostemon', 'Ancylandrena', 'Ancyloscelis', 'An
 
 print ("code is running! beep boop")
 #Read in data ===== this is the Kammerer et al. (2020) dataset. Available from https://doi.org/10.6084/m9.figshare.c.4728725.v1
-allbees = pd.read_csv("1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
 print ("file successfully read in!")
 #convert years to numeric and assign to a new column
 allbees['year_numbers'] = pd.to_numeric(allbees['year'], errors = 'coerce')
@@ -247,7 +247,7 @@ ax3[3, 0].bar(atl_versatum.index, atl_versatum.tolist(), color='#1f77b4')
 
 
 #ok now we move onto the anthropogenic bees dataset, downloaded from: https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.8md5419
-allbees = pd.read_csv("Datos1-2.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("data/Datos1.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
 print ("file successfully read in!")
 
 print ("Total number of records in the dataset:", len(allbees))
@@ -367,17 +367,17 @@ ax3[3, 1].bar(anthro_versatum.index, anthro_versatum.tolist(), color='rebeccapur
 
 # Read in the GBIF dataset
 print ("code is running!")
-#allbees = pd.read_csv("usgs-data.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode', header = None, 
-#                      names = ['num', 'code', 'web_address', 'animal', 'arthropod', 'insecta', 'order', 'family', 'genus', 'name', 'mystery', 'ID_level', 'scientific name', 'name_again',
-#                               'blank','country','blank2','state', 'blank3', 'blank4', 'code2', 'lat', 'lon', 'elev_maybe', 'y', 'z', 'aa', 'ab', 'ac', 'full_date', 'day', 'month', 'year',
-#                               'another_number', 'same_number_again', 'preserved_specimen', 'bison', 'inst_code',  'event_and_DRO_num', 'an', 'collector', 'ID_date',
-#                               'cc', 'ar', 'identifier', 'au', 'time','geode' ])
-
-## column headers: gbifID	datasetKey	occurrenceID	kingdom	phylum	class	order	family	genus	species	infraspecificEpithet	taxonRank	scientificName	verbatimScientificName	verbatimScientificNameAuthorship	countryCode	locality	stateProvince	occurrenceStatus	individualCount	publishingOrgKey	decimalLatitude	decimalLongitude	coordinateUncertaintyInMeters	coordinatePrecision	elevation	elevationAccuracy	depth	depthAccuracy	eventDate	day	month	year	taxonKey	speciesKey	basisOfRecord	institutionCode	collectionCode	catalogNumber	recordNumber	identifiedBy	dateIdentified	license	rightsHolder	recordedBy	typeStatus	establishmentMeans	lastInterpreted	mediaType	issue
 
 #USGS BIML dataset from https://doi.org/10.15468/dl.2e5ugx
 #allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode')
-allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+#allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+
+###allbees = pd.read_csv("data/0011366-231120084113126_simple.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #new data redo
+#allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #trying the darwin core
+#changing to nonly read in the important columsn since it crashes otherwise
+allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year", "species", "family", "countryCode"]) #trying the darwin core
+
+
 
 print ("file successfully read in!")
 

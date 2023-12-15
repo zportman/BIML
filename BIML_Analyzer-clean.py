@@ -18,7 +18,7 @@ ceratina_changed_or_described = ["Ceratina dupla", "Ceratina floridana", "Cerati
 ceratina_morphos = ["Ceratina calcarata/dupla/mikmaqi", "Ceratina calcarata/mikmaqi", "Ceratina dupla/mikmaqi"]
 
 #Lasioglossum species that were described or newly reinstated by Gibbs 2010 or 2011. Only includes the abundant species (in the datasets I'm looking at)
-species_desc_or_rein_Gibbs = ["Lasioglossum ephialtum", "Lasioglossum gotham", "Lasioglossum trigeminum", "Lasioglossum floridanum", "Lasioglossum leucocomum"]
+species_desc_or_rein_Gibbs = ["Lasioglossum ephialtum", "Lasioglossum gotham", "Lasioglossum trigeminum", "Lasioglossum floridanum", "Lasioglossum leucocomum", "Lasioglossum leucocomus"]
 
 #The rest of the species that were described or newly reinstated by Gibbs 2010 or 2011, included in a separate list because they occur in low numbers
 other_species_desc_Gibbs = ["Lasioglossum taylorae", "Lasioglossum timothyi", "Lasioglossum georgeickworti", "Lasioglossum katherineae", 
@@ -27,12 +27,12 @@ other_species_desc_Gibbs = ["Lasioglossum taylorae", "Lasioglossum timothyi", "L
 #Species characterized as frequently or "often misidentified" by Gibbs 2011
 species_freq_misidentified = ["Lasioglossum abanci", "Lasioglossum admirandum", "Lasioglossum near_admirandum", 
                               "Lasioglossum oblongum", "Lasioglossum versatum", "Lasioglossum admirandum/rohweri",
-                              "Lasioglossum rohweri/versatum", "Lasioglossum viridatum", "Lasioglossum viridatum_group"] # could potentially add "Lasioglossum viridatum_group" and L. viridatum....
+                              "Lasioglossum rohweri/versatum", "Lasioglossum viridatum", "Lasioglossum viridatum_group" , "Lasioglossum admirandum?", "Lasioglossum nr admirandum"] # could potentially add "Lasioglossum viridatum_group" and L. viridatum....
 
 # The Lasioglossum species that have had their identity or identification changed significantly by Gibbs 2010,2011, to the extent where old IDs are unreliable.
 species_known_bad_pre_2010 = ["Lasioglossum pilosum", "Lasioglossum callidum", "Lasioglossum versatum", "Lasioglossum admirandum", "Lasioglossum near_admirandum", 
                               "Lasioglossum abanci", "Lasioglossum oblongum", "Lasioglossum viridatum", "Lasioglossum viridatum_group",
-                              "Lasioglossum admirandum/rohweri", "Lasioglossum rohweri/versatum"                              ] # adding viridatum in here because it's listed as "viridatum group" in the original data
+                              "Lasioglossum admirandum/rohweri", "Lasioglossum rohweri/versatum"                               ] # adding viridatum in here because it's listed as "viridatum group" in the original data
 
 #All of the species descirbed in Gibbs 2010. 
 ALL_species_described_Gibbs_2010 = ['abundipunctum', 'atwoodi', 'dashwoodi', 'ebmerellum', 'ephialtum', 'imbrex', 'knereri', 'lilliputense', 'macroprosopum', 
@@ -277,8 +277,8 @@ def overall_stats_encapsulator(allbees):
 
 print ("code is running! beep boop")
 
-#Read in data ===== this is the Kammerer et al. (2020) dataset
-allbees = pd.read_csv("1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+#Read in data ===== this is the Kammerer et al. (2020) dataset. Available from https://doi.org/10.6084/m9.figshare.c.4728725.v1
+allbees = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
 print ("file successfully read in!")
 print ("Mid-Atlantic bees dataset")
 print ("Number of Mid-Atlantic bees records in dataset:", len(allbees.index))
@@ -305,7 +305,7 @@ overall_stats_encapsulator(allbees)
 
 #ok now we move onto the Anthropogenic Bees dataset
     
-allbees = pd.read_csv("Datos1.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("data/Datos1.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
 print ("file successfully read in!")
 print ("anthropogenic bees dataset")
 
@@ -343,19 +343,35 @@ overall_stats_encapsulator(allbees)
     
 # Read in the GBIF dataset
 print ("code is running!")
-#allbees = pd.read_csv("usgs-data.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode', header = None, 
-#                      names = ['num', 'code', 'web_address', 'animal', 'arthropod', 'insecta', 'order', 'family', 'genus', 'name', 'mystery', 'ID_level', 'scientific name', 'name_again',
-#                               'blank','country','blank2','state', 'blank3', 'blank4', 'code2', 'lat', 'lon', 'elev_maybe', 'y', 'z', 'aa', 'ab', 'ac', 'full_date', 'day', 'month', 'year',
-#                               'another_number', 'same_number_again', 'preserved_specimen', 'bison', 'inst_code',  'event_and_DRO_num', 'an', 'collector', 'ID_date',
-#                               'cc', 'ar', 'identifier', 'au', 'time','geode' ])
+
 #USGS BIML dataset from https://doi.org/10.15468/dl.2e5ugx
 #allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #old 2022 biml dataset
-allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+#allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+
+allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year","genus", "species", "family", "countryCode", "taxonRank", "verbatimScientificName", 'identificationQualifier']) #trying the darwin core
+
+
 
 print ("file successfully read in!")
 print ("GBIF dataset")
 
-print (allbees.head())
+
+#ok gonna try a bit of hack to look at morphospecies because they all get booted by GBIF. Gonna try using verbatimScientificName instead of specis. 
+#allbees['species'] = allbees['verbatimScientificName']
+#ugh that doesnt do much since so many aren't even in that. For example all the Ceratina dupla/mikmaqi have the "dupla/mikmaqi" part in the "identificationQualifier" field. Why??
+allbees['identificationQualifier'] = allbees['identificationQualifier'].fillna('')
+allbees['species'] = allbees['species'].fillna('')
+
+#allbees['species'] = (allbees['species'] + " " + allbees['identificationQualifier']).str.strip(" ")
+#gonna use verbatimScientiicName instead + qualifier to try and bring in Everything possible. This is the only one that really works since verbatim incudes genus + species
+allbees['species'] = (allbees['verbatimScientificName'] + " " + allbees['identificationQualifier']).str.strip(" ")
+#allbees['species'] = (allbees['genus'] + " " + allbees['identificationQualifier']).str.strip(" ") #no work, cuz 
+
+
+
+#try filter by ceratina...
+
+print (allbees.head(40))
 print ("Number of BIML GBIF raw records in dataset:", len(allbees.index))
 
 
