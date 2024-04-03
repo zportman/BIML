@@ -73,6 +73,10 @@ print ("file successfully read in!")
 #convert years to numeric and assign to a new column
 allbees['year_numbers'] = pd.to_numeric(allbees['year'], errors = 'coerce')
 
+#here use grouped_name instead of name
+#change name to old_name
+#then change grouped_name to name
+
 
 
 Ca_strenua = count_by_year(allbees, 2002, 2016, "Ceratina strenua") #This is for mid atlantic dataset
@@ -130,7 +134,7 @@ ax1[0,0].set_xticklabels([2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 
 ax1[0,0].set_ylabel('# Records', fontsize=13)
 ax1[0,0].set_title('Mid-Atlantic C. calcarata', y=1, pad = 2)
 ax1[0,0].bar(C_calcarata_atlantic.index, C_calcarata_atlantic.tolist(), color='#1f77b4')
-#ax1[0,0].bar(female_C_calcarata_atlantic.index, female_C_calcarata_atlantic.tolist(), color='gray') #overlay ust the female data
+ax1[0,0].bar(female_C_calcarata_atlantic.index, female_C_calcarata_atlantic.tolist(), color='gray') #overlay ust the female data
 
 ax1[1,0].set_xticks(list(range(2002, 2017)))
 ax1[1,0].tick_params(axis='x', labelrotation=45)
@@ -375,8 +379,10 @@ print ("code is running!")
 ###allbees = pd.read_csv("data/0011366-231120084113126_simple.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #new data redo
 #allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #trying the darwin core
 #changing to nonly read in the important columsn since it crashes otherwise
-allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year", "species", "family", "countryCode"]) #trying the darwin core
 
+#here is the full drawincore that works
+allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year", "species", "family", "countryCode", "sex"]) #trying the darwin core
+allbees['sex'] = allbees['sex'].str.lower()
 
 
 print ("file successfully read in!")
@@ -435,7 +441,7 @@ gbif_coreopsis = count_by_year(allbees, 2001, 2022, "Lasioglossum coreopsis") #T
 #Ceratina species
 
 gbif_calcarata = count_by_year(allbees, 2001, 2022, "Ceratina calcarata") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-#gbif_calcarata_females = female_count_by_year(allbees, 2001, 2022, "Ceratina calcarata") #wah, there isn'a female/male column in this data waaahhh
+gbif_calcarata_females = female_count_by_year(allbees, 2001, 2022, "Ceratina calcarata") #wah, there isn'a female/male column in this data waaahhh
 gbif_dupla = count_by_year(allbees, 2001, 2022, "Ceratina dupla") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
 gbif_mikmaqi = count_by_year(allbees, 2001, 2022, "Ceratina mikmaqi") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
 
@@ -471,6 +477,8 @@ ax1[0,1].tick_params(axis='x', labelrotation=45)
 ax1[0,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
 ax1[0,1].set_title('BIML GBIF C. calcarata', y=1, pad = 2)
 ax1[0,1].bar(gbif_calcarata.index, gbif_calcarata.tolist(), color='brown')
+ax1[0,1].bar(gbif_calcarata_females.index, gbif_calcarata_females.tolist(), color='gray') #overlay ust the female data
+
 
 #add C. dupla to Figure 2
 ax1[1,1].set_xticks(list(range(2001, 2023)))

@@ -12,7 +12,10 @@ import csv
 #First setting up all the lists of species for convenience.
 
 #The Ceratina species that were changed by either Rehan and Richards 2008 or Rehan and Sheffield 2011
-ceratina_changed_or_described = ["Ceratina dupla", "Ceratina floridana", "Ceratina mikmaqi", "Ceratina calcarata"] #including Ceratina calcarata for now
+#ceratina_changed_or_described = ["Ceratina dupla", "Ceratina floridana", "Ceratina mikmaqi", "Ceratina calcarata"] #including Ceratina calcarata as there is no easy way to sep out males vs females and there arent too many males
+ceratina_changed_or_described = ["Ceratina dupla", "Ceratina floridana", "Ceratina mikmaqi"] #without C. calcarata
+
+
 
 #Ceratina morphospecies used in some of the datasets
 ceratina_morphos = ["Ceratina calcarata/dupla/mikmaqi", "Ceratina calcarata/mikmaqi", "Ceratina dupla/mikmaqi"]
@@ -59,12 +62,44 @@ def write_csv(filename, data):
         writer.writerow(data)    
 
 
+def pre_post_2010_female(dataframe, species_name, sex):
+    """Given a species name, it returns the pre and post 2010 numbers of it BUT ONLY FEMALES, Aka up to 2009, and then 2010 and onwards"""
+    allbees = dataframe
+    
+    #step 1: get all the records of a given bee 
+    species = allbees[allbees['name'] == species_name]
+    
+    #step 1.25 get the females  only
+    species = species[species['sex'] == sex]
+    
+    #step 1.5: find the mimimum year, aka the earlier this species waas found in the dataset
+    minyear = species['year_numbers'].min()
+    
+    #step 2: count all the pre 2010 records
+    pre2010 = species[species['year_numbers'] < 2010]
+    
+    #step 2.5: adding in the pre 2008 records, so that we can look at the breakdown of pre-2008 vs 2008-2009
+    #pre2008 = species[species['year_numbers'] < 2008]
+    
+    
+    #step 3: count all the records 2010 and after
+    post2010 = species[species['year_numbers'] > 2009]
+    
+    #sneak in a little code here to get the values by year just for manual sanity checking
+    ###bee_per_year = species['year_numbers'].value_counts().sort_index()
+    ###print (species_name, bee_per_year)    
+    
+    #return the counts of pre and post 2010
+    #return pre2010.shape[0], post2010.shape[0], minyear, pre2008.shape[0] # old thing for step 2.5, put in wrong place
+    return pre2010.shape[0], post2010.shape[0], minyear
+
 def pre_post_2010(dataframe, species_name):
     """Given a species name, it returns the pre and post 2010 numbers of it, Aka up to 2009, and then 2010 and onwards"""
     allbees = dataframe
     
     #step 1: get all the records of a given bee 
     species = allbees[allbees['name'] == species_name]
+    
     
     #step 1.5: find the mimimum year, aka the earlier this species waas found in the dataset
     minyear = species['year_numbers'].min()
@@ -199,7 +234,7 @@ def overall_stats_encapsulator(allbees):
     
     
     
-    #So then need to calcualt proprtion that are invalid....
+    #So then need to calcualt proportion that are invalid....
     #here we add up total number of records with KNOWN taxonomic issues:
     
     total_known_invalid_Lasioglossum = 0
@@ -243,11 +278,14 @@ def overall_stats_encapsulator(allbees):
 
     
     
-    total_known_invalid_Ceratina= 0
+    total_known__Ceratina= 0
     #Let's try adding the Ceratina to that list
     for bee in ceratina_morphos:
         results = pre_post_2010(allbees, bee)
-        total_known_invalid_Ceratina += results[0]
+        total_known_invalid_Ceratina += results[0]  
+    #not adding in the ceratina changed or described even though a number of those are almost certainly wrong    
+    
+        
     
     print ("Total Ceratina bees with KNOWN taxonomic issues: ", total_known_invalid_Ceratina)
     
@@ -261,9 +299,9 @@ def overall_stats_encapsulator(allbees):
     prop_pre2010_ALL_invalid = (total_known_invalid_Lasioglossum + total_known_invalid_Ceratina + records_only_to_genus_pre_2010) /len(pre2010)
     print ("Proportion of ALL pre 2010 records with known taxonomic issues / invalid (Lasio + Cera) + records only to genus:", prop_pre2010_ALL_invalid)    
     
-    print ("Proprtion of all records (2002-2016) with known taxonomic issues / invalid", (total_known_invalid_Lasioglossum + total_known_invalid_Ceratina)/len(allbees))
+    print ("Proportion of all records (2002-2016) with known taxonomic issues / invalid", (total_known_invalid_Lasioglossum + total_known_invalid_Ceratina)/len(allbees))
     all_bees_invalid = (total_known_invalid_Lasioglossum + total_known_invalid_Ceratina + records_only_to_genus)/len(allbees)
-    print ("Proprtion of all records (2002-2016) with known taxonomic issues / invalid, inc specimens not ID'd to species (in all years)", all_bees_invalid)
+    print ("Proportion of all records (2002-2016) with known taxonomic issues / invalid, inc specimens not ID'd to species (in all years)", all_bees_invalid)
     
                                                          
     
@@ -300,8 +338,9 @@ pre_post_encapsulator(allbees)
 
 # then run all the general stats
 overall_stats_encapsulator(allbees)
-    
-    
+
+#here just try the female only    
+###print ("CERATINA CALCARATA FEMALE TEST:", pre_post_2010_female(allbees, "Ceratina calcarata", "female"))
 
 #ok now we move onto the Anthropogenic Bees dataset
     
@@ -345,10 +384,17 @@ overall_stats_encapsulator(allbees)
 print ("code is running!")
 
 #USGS BIML dataset from https://doi.org/10.15468/dl.2e5ugx
-#allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #old 2022 biml dataset
-#allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data
+#allbees = pd.read_csv("0086423-210914110416597.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #old 2022 biml dataset #old
+#allbees = pd.read_csv("2023-data/0273179-220831081235567.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data #old
 
-allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year","genus", "species", "family", "countryCode", "taxonRank", "verbatimScientificName", 'identificationQualifier']) #trying the darwin core
+#this is the full darwincore download, used for looking at the morphospeciees hidden in the different fields such as "identificationQualifier"
+# Link for this dataset: https://www.gbif.org/occurrence/download/0011374-231120084113126, https://doi.org/10.15468/dl.q9kp2a
+allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year","genus", "species", "family", "countryCode", "taxonRank", "verbatimScientificName", 'identificationQualifier', 'sex']) #trying the darwin core
+
+
+
+#here is the simple gbif download, which is avaiable at https://doi.org/10.15468/dl.7kz274
+###allbees = pd.read_csv("data/0011366-231120084113126_simple.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data #old
 
 
 
@@ -356,18 +402,22 @@ print ("file successfully read in!")
 print ("GBIF dataset")
 
 
+"""
+#uncommont this section when running on the full darwincore dataset to pull in the hidden morphospecies
+#note this adds a bunch of new records to the Lasioglossum counts, presumably because so many records are bad and have something in the verbatim name but not the species / genus. This data makes zero sense.
+
 #ok gonna try a bit of hack to look at morphospecies because they all get booted by GBIF. Gonna try using verbatimScientificName instead of specis. 
 #allbees['species'] = allbees['verbatimScientificName']
 #ugh that doesnt do much since so many aren't even in that. For example all the Ceratina dupla/mikmaqi have the "dupla/mikmaqi" part in the "identificationQualifier" field. Why??
 allbees['identificationQualifier'] = allbees['identificationQualifier'].fillna('')
 allbees['species'] = allbees['species'].fillna('')
 
+
 #allbees['species'] = (allbees['species'] + " " + allbees['identificationQualifier']).str.strip(" ")
 #gonna use verbatimScientiicName instead + qualifier to try and bring in Everything possible. This is the only one that really works since verbatim incudes genus + species
 allbees['species'] = (allbees['verbatimScientificName'] + " " + allbees['identificationQualifier']).str.strip(" ")
 #allbees['species'] = (allbees['genus'] + " " + allbees['identificationQualifier']).str.strip(" ") #no work, cuz 
-
-
+"""
 
 #try filter by ceratina...
 
@@ -396,6 +446,10 @@ allbees = allbees[allbees['year_numbers'] > 2000]
 excluded = allbees[allbees['year_numbers'] > 2022] # want to count the number of excluded records
 print ("Number of excluded post 2022 BIML GBIF records:", len(excluded.index))
 allbees = allbees[allbees['year_numbers'] < 2022] 
+
+
+###print ("CERATINA CALCARATA FEMALE GBIF:", pre_post_2010_female(allbees, "Ceratina calcarata", "FEMALE"))
+
 
 #print(allbees.head())
 print ("Number of BIML GBIF records remaining after filtering:", len(allbees.index))
