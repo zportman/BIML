@@ -396,7 +396,7 @@ allbees['year_numbers'] = pd.to_numeric(allbees['year'], errors = 'coerce')
 allbees['name']= allbees['species']
 
 #filtering out anything that isn't in a bee family:
-allbees = allbees[allbees['family'].isin(['Apidae', 'Andrenidae', 'Colletdiae', 'Halictidae', 'Megachilidae', 'Melittidae'])] 
+allbees = allbees[allbees['family'].isin(['Apidae', 'Andrenidae', 'Colletidae', 'Halictidae', 'Megachilidae', 'Melittidae'])] 
 
 #Use only records from the US
 allbees = allbees[allbees['countryCode'] == "US"] 
@@ -407,7 +407,7 @@ print ("Number of excluded pre 2001 BIML GBIF records:", len(excluded.index))
 allbees = allbees[allbees['year_numbers'] > 2000] 
 
 #filtering out all years over 2018 cuz there are only 47 -- updating to over 2022 with new 2023 gbif data file
-excluded = allbees[allbees['year_numbers'] > 2018] # want to count the number of excluded records
+excluded = allbees[allbees['year_numbers'] > 2022] # want to count the number of excluded records
 print ("Number of excluded post 2018 BIML GBIF records:", len(excluded.index))
 allbees = allbees[allbees['year_numbers'] < 2023] 
 
