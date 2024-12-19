@@ -25,7 +25,7 @@ species_desc_or_rein_Gibbs = ["Lasioglossum ephialtum", "Lasioglossum gotham", "
 
 #The rest of the species that were described or newly reinstated by Gibbs 2010 or 2011, included in a separate list because they occur in low numbers
 other_species_desc_Gibbs = ["Lasioglossum taylorae", "Lasioglossum timothyi", "Lasioglossum georgeickworti", "Lasioglossum katherineae", 
-                            "Lasioglossum rozeni"]
+                            "Lasioglossum rozeni", "Lasioglossum planatum"]
 
 #Species characterized as frequently or "often misidentified" by Gibbs 2011
 species_freq_misidentified = ["Lasioglossum abanci", "Lasioglossum admirandum", "Lasioglossum near_admirandum", 
@@ -42,7 +42,7 @@ ALL_species_described_Gibbs_2010 = ['abundipunctum', 'atwoodi', 'dashwoodi', 'eb
                                     'packeri', 'prasinogaster', 'reasbeckae', 'sablense', 'sandhousiellum', 'sheffieldi', 'sitocleptum', 'taylorae', 'timothyi', 'yukonae']
 
 # only NEWLY reinstated, not just a name change
-species_reinstated_by_Gibbs_2010 = ['floridanum', 'leucocomum'] 
+species_reinstated_by_Gibbs_2010 = ['floridanum', 'leucocomum', 'planatum'] 
 
 #All of the species described in Gibbs 2011
 ALL_species_described_Gibbs_2011 = ['arantium', 'ascheri', 'batya', 'curculum', 'furunculum', 'georgeickworti', 'gotham', 'izawsum', 'katherineae', 'rozeni', 'trigeminum']
@@ -195,8 +195,7 @@ def overall_stats_encapsulator(allbees):
     print ("Total number of records pre-2010:",len(pre2010)    )
     
     post2010 = allbees[allbees['year_numbers'] > 2009]
-    print ("Total number of records 2010 and onwards:",len(post2010)    )
-    
+    print ("Total number of records 2010 and onwards:",len(post2010)    )    
     
     Lasioglossum = allbees[allbees['name'].str.contains('Lasioglossum', na=False)]
     print ("Total number of Lasioglossum in the dataset:", len(Lasioglossum))
@@ -254,6 +253,7 @@ def overall_stats_encapsulator(allbees):
     #Lasio_not_to_species = allbees[allbees['name'] == "Lasioglossum pilosum"]
     records_only_to_genus = 0
     records_only_to_genus_pre_2010 = 0
+    """Doing genus-only count for GBIF only since the other 2 dataset pre-excluded records not to species"""
     if 'taxonRank' in allbees.columns:
         records_not_to_species = allbees[allbees['taxonRank'] == "GENUS"]
         print("Number of records not identified to species:", len(records_not_to_species))
@@ -273,12 +273,31 @@ def overall_stats_encapsulator(allbees):
         lasio_not_to_species_pre_2010 = lasio_not_to_species[lasio_not_to_species['year_numbers'] < 2010]
         print ("Lasioglossum not to species pre 2010", len(lasio_not_to_species_pre_2010))
         
-    
+        #doing some other genera to look at:
+        sphecodes = allbees[allbees['genus']=="Sphecodes"]
+        
+        print ("Total number of Sphecodes in the dataset from genus == sphecodes:", len(sphecodes))
+        #print (sphecodes.head())
+        
+        spheco_not_to_species = records_not_to_species[records_not_to_species['genus'] == "Sphecodes"]
+        print ("Total Sphecodes not to species", len(spheco_not_to_species))
+        #print (spheco_not_to_species.head())
+        
+        print ("Percent Sphecodes not to species", len(spheco_not_to_species)/ len(sphecodes))
+        
+        
+        nomada = allbees[allbees['genus']=="Nomada"]
+        print ("Total number of Nomadas in the dataset from genus == nomada:", len(nomada))        
+        nomada_not_to_species = records_not_to_species[records_not_to_species['genus'] == "Nomada"]
+        print ("Total Nomada not to species", len(nomada_not_to_species))
+        
+        print ("Percent nomada not to species", len(nomada_not_to_species)/ len(nomada))        
+
     #data = allbees[allbees['name'].str.match(r'\A[\w-]+\Z')]
 
     
     
-    total_known__Ceratina= 0
+    total_known_invalid_Ceratina= 0
     #Let's try adding the Ceratina to that list
     for bee in ceratina_morphos:
         results = pre_post_2010(allbees, bee)
@@ -295,6 +314,13 @@ def overall_stats_encapsulator(allbees):
     
     prop_pre2010_ALL_invalid = (total_known_invalid_Lasioglossum + total_known_invalid_Ceratina) /len(pre2010)
     print ("Proportion of ALL pre 2010 records with known taxonomic issues / invalid (Lasio + Cera):", prop_pre2010_ALL_invalid)
+    
+    
+    if 'taxonRank' in allbees.columns:
+        prop_pre2010_ALL_Lasio_cera= (total_known_invalid_Lasioglossum + total_known_invalid_Ceratina + len(ceratina_not_to_species_pre_2010) + len(lasio_not_to_species_pre_2010)) /len(pre2010)
+        print ("Proportion of ALL pre 2010 records with known taxonomic issues / invalid (Lasio + Cera) + Lasio +Cera not to genus:", prop_pre2010_ALL_Lasio_cera)           
+  
+    
     
     prop_pre2010_ALL_invalid = (total_known_invalid_Lasioglossum + total_known_invalid_Ceratina + records_only_to_genus_pre_2010) /len(pre2010)
     print ("Proportion of ALL pre 2010 records with known taxonomic issues / invalid (Lasio + Cera) + records only to genus:", prop_pre2010_ALL_invalid)    
@@ -316,7 +342,7 @@ def overall_stats_encapsulator(allbees):
 print ("code is running! beep boop")
 
 #Read in data ===== this is the Kammerer et al. (2020) dataset. Available from https://doi.org/10.6084/m9.figshare.c.4728725.v1
-allbees = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', on_bad_lines = "skip", index_col=False, dtype='unicode')
 print ("file successfully read in!")
 print ("Mid-Atlantic bees dataset")
 print ("Number of Mid-Atlantic bees records in dataset:", len(allbees.index))
@@ -344,7 +370,7 @@ overall_stats_encapsulator(allbees)
 
 #ok now we move onto the Anthropogenic Bees dataset
     
-allbees = pd.read_csv("data/Datos1.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("data/Datos1.csv", sep=',', on_bad_lines = "skip", index_col=False, dtype='unicode')
 print ("file successfully read in!")
 print ("anthropogenic bees dataset")
 
@@ -389,12 +415,12 @@ print ("code is running!")
 
 #this is the full darwincore download, used for looking at the morphospeciees hidden in the different fields such as "identificationQualifier"
 # Link for this dataset: https://www.gbif.org/occurrence/download/0011374-231120084113126, https://doi.org/10.15468/dl.q9kp2a
-allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year","genus", "species", "family", "countryCode", "taxonRank", "verbatimScientificName", 'identificationQualifier', 'sex']) #trying the darwin core
+###allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year","genus", "species", "family", "countryCode", "taxonRank", "verbatimScientificName", 'identificationQualifier', 'sex']) #trying the darwin core
 
 
 
 #here is the simple gbif download, which is avaiable at https://doi.org/10.15468/dl.7kz274
-###allbees = pd.read_csv("data/0011366-231120084113126_simple.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data #old
+allbees = pd.read_csv("data/0011366-231120084113126_simple.csv", sep='\t', on_bad_lines = "skip", index_col=False, dtype='unicode') #this is the 2023 new data #old
 
 
 
@@ -432,7 +458,7 @@ allbees['year_numbers'] = pd.to_numeric(allbees['year'], errors = 'coerce')
 allbees['name']= allbees['species']
 
 #filtering out anything that isn't in a bee family:
-allbees = allbees[allbees['family'].isin(['Apidae', 'Andrenidae', 'Colletdiae', 'Halictidae', 'Megachilidae', 'Melittidae'])] 
+allbees = allbees[allbees['family'].isin(['Apidae', 'Andrenidae', 'Colletidae', 'Halictidae', 'Megachilidae', 'Melittidae'])] 
 
 #Use only records from the US
 allbees = allbees[allbees['countryCode'] == "US"] 
@@ -453,6 +479,20 @@ allbees = allbees[allbees['year_numbers'] < 2022]
 
 #print(allbees.head())
 print ("Number of BIML GBIF records remaining after filtering:", len(allbees.index))
+
+
+#here count up number with identier and ident year
+ident_summary = allbees['identifiedBy'].value_counts()
+#print(ident_summary)
+ident_summary.to_csv("identified_by.csv")
+
+
+ident_date_summary = allbees['dateIdentified'].value_counts()
+#print(ident_date_summary)
+ident_date_summary.to_csv("date_ident.csv")
+
+
+
 
 
 #TODO maybe: also create a new column for identifier by truncating the web address

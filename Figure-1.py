@@ -68,7 +68,7 @@ bee_genera = ['Agapanthinus', 'Agapostemon', 'Ancylandrena', 'Ancyloscelis', 'An
 
 print ("code is running! beep boop")
 #Read in data ===== this is the Kammerer et al. (2020) dataset. Available from https://doi.org/10.6084/m9.figshare.c.4728725.v1
-allbees = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', on_bad_lines = "skip", index_col=False, dtype='unicode')
 print ("file successfully read in!")
 #convert years to numeric and assign to a new column
 allbees['year_numbers'] = pd.to_numeric(allbees['year'], errors = 'coerce')
@@ -80,7 +80,7 @@ allbees['year_numbers'] = pd.to_numeric(allbees['year'], errors = 'coerce')
 
 
 Ca_strenua = count_by_year(allbees, 2002, 2016, "Ceratina strenua") #This is for mid atlantic dataset
-La_coreopsis = count_by_year(allbees, 2002, 2016, "Lasioglossum coreopsis") #This is for mid atlantic dataset
+La_cressonii = count_by_year(allbees, 2002, 2016, "Lasioglossum cressonii") #This is for mid atlantic dataset
 Au_aurata = count_by_year(allbees, 2002, 2016, "Augochlorella aurata") #This is for mid atlantic dataset
 
 C_calcarata_atlantic = count_by_year(allbees, 2002, 2016, "Ceratina calcarata") #This is for mid atlantic dataset
@@ -113,13 +113,13 @@ ax0[1,0].set_ylabel('# Records', fontsize=13)
 ax0[1,0].set_title('Mid-Atlantic C. strenua', y=1, pad = 2)
 ax0[1,0].bar(Ca_strenua.index, Ca_strenua.tolist(), color='#1f77b4')
 
-#add coreopsis to zero
+#add cressonii to zero
 ax0[2,0].set_xticks(list(range(2002, 2017)))
 ax0[2,0].tick_params(axis='x', labelrotation=45)
 ax0[2,0].set_xticklabels([2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016], ha='right', minor=False, rotation_mode='anchor')
 ax0[2,0].set_ylabel('# Records', fontsize=13)
-ax0[2,0].set_title('Mid-Atlantic L. coreopsis', y=1, pad = 2)
-ax0[2,0].bar(La_coreopsis.index, La_coreopsis.tolist(), color='#1f77b4')
+ax0[2,0].set_title('Mid-Atlantic L. cressonii', y=1, pad = 2)
+ax0[2,0].bar(La_cressonii.index, La_cressonii.tolist(), color='#1f77b4')
 
 
 #Second figure, for Ceratina
@@ -134,7 +134,7 @@ ax1[0,0].set_xticklabels([2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 
 ax1[0,0].set_ylabel('# Records', fontsize=13)
 ax1[0,0].set_title('Mid-Atlantic C. calcarata', y=1, pad = 2)
 ax1[0,0].bar(C_calcarata_atlantic.index, C_calcarata_atlantic.tolist(), color='#1f77b4')
-ax1[0,0].bar(female_C_calcarata_atlantic.index, female_C_calcarata_atlantic.tolist(), color='gray') #overlay ust the female data
+#########################ax1[0,0].bar(female_C_calcarata_atlantic.index, female_C_calcarata_atlantic.tolist(), color='gray') #overlay ust the female data
 
 ax1[1,0].set_xticks(list(range(2002, 2017)))
 ax1[1,0].tick_params(axis='x', labelrotation=45)
@@ -251,7 +251,7 @@ ax3[3, 0].bar(atl_versatum.index, atl_versatum.tolist(), color='#1f77b4')
 
 
 #ok now we move onto the anthropogenic bees dataset, downloaded from: https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.8md5419
-allbees = pd.read_csv("data/Datos1.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+allbees = pd.read_csv("data/Datos1.csv", sep=',', on_bad_lines = "skip", index_col=False, dtype='unicode')
 print ("file successfully read in!")
 
 print ("Total number of records in the dataset:", len(allbees))
@@ -282,7 +282,7 @@ anthro_versatum = count_by_year(allbees, 2001, 2015, "Lasioglossum versatum") #T
 # Consistent taxonomy species for figure 1
 anthro_strenua = count_by_year(allbees, 2001, 2015, "Ceratina strenua") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 anthro_aurata = count_by_year(allbees, 2001, 2015, "Augochlorella aurata") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
-anthro_coreopsis = count_by_year(allbees, 2001, 2015, "Lasioglossum coreopsis") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
+anthro_cressonii = count_by_year(allbees, 2001, 2015, "Lasioglossum cressonii") #This is range for anthropogenic bees -- though it does have some 1999 records that we will have already filtered out
 
 
 
@@ -302,12 +302,12 @@ ax0[1,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,
 ax0[1,1].set_title('Anthropogenic C. strenua', y=1, pad = 2)
 ax0[1,1].bar(anthro_strenua.index, anthro_strenua.tolist(), color='rebeccapurple')
 
-#add coreopsis to zero (Figure 1)
+#add cressonii to zero (Figure 1)
 ax0[2,1].set_xticks(list(range(2001, 2016)))
 ax0[2,1].tick_params(axis='x', labelrotation=45)
 ax0[2,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014, ''], ha='right', minor=False, rotation_mode='anchor')
-ax0[2,1].set_title('Anthropogenic L. coreopsis', y=1, pad = 2)
-ax0[2,1].bar(anthro_coreopsis.index, anthro_coreopsis.tolist(), color='rebeccapurple')
+ax0[2,1].set_title('Anthropogenic L. cressonii', y=1, pad = 2)
+ax0[2,1].bar(anthro_cressonii.index, anthro_cressonii.tolist(), color='rebeccapurple')
 
 
 # adding to newly described species figure 
@@ -381,7 +381,7 @@ print ("code is running!")
 #changing to nonly read in the important columsn since it crashes otherwise
 
 #here is the full drawincore that works
-allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode', usecols=["gbifID", "year", "species", "family", "countryCode", "sex"]) #trying the darwin core
+allbees = pd.read_csv("data/0011374-231120084113126_darwincore/occurrence.txt", sep='\t', on_bad_lines='skip', index_col=False, dtype='unicode', usecols=["gbifID", "year", "species", "family", "countryCode", "sex"]) #trying the darwin core
 allbees['sex'] = allbees['sex'].str.lower()
 
 
@@ -436,7 +436,9 @@ gbif_versatum = count_by_year(allbees, 2001, 2022, "Lasioglossum versatum") #Thi
 # The taxonomic consistent species for figure 1
 gbif_strenua = count_by_year(allbees, 2001, 2022, "Ceratina strenua") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
 gbif_aurata = count_by_year(allbees, 2001, 2022, "Augochlorella aurata") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
-gbif_coreopsis = count_by_year(allbees, 2001, 2022, "Lasioglossum coreopsis") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+gbif_cressonii = count_by_year(allbees, 2001, 2022, "Lasioglossum cressonii") #This is the range for gbif dataset -- leaving out pre-2001 records because so few
+#illinoense might also work for the control dialictus? 
+
 
 #Ceratina species
 
@@ -463,12 +465,12 @@ ax0[1,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,
 ax0[1,2].set_title('BIML GBIF C. strenua', y=1, pad = 2)
 ax0[1,2].bar(gbif_strenua.index, gbif_strenua.tolist(), color='brown')
 
-#add coreopsis to zero (Figure 1)
+#add cressonii to zero (Figure 1)
 ax0[2,2].set_xticks(list(range(2001, 2023)))
 ax0[2,2].tick_params(axis='x', labelrotation=45)
 ax0[2,2].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
-ax0[2,2].set_title('BIML GBIF L. coreopsis', y=1, pad = 2)
-ax0[2,2].bar(gbif_coreopsis.index, gbif_coreopsis.tolist(), color='brown')
+ax0[2,2].set_title('BIML GBIF L. cressonii', y=1, pad = 2)
+ax0[2,2].bar(gbif_cressonii.index, gbif_cressonii.tolist(), color='brown')
 
 
 #add C. calcarata to Figure 2
@@ -477,7 +479,7 @@ ax1[0,1].tick_params(axis='x', labelrotation=45)
 ax1[0,1].set_xticklabels(['', 2002,'', 2004,'', 2006,'', 2008,'', 2010,'', 2012,'', 2014,'', 2016,'', 2018, '', 2020, '', 2022], ha='right', minor=False, rotation_mode='anchor')
 ax1[0,1].set_title('BIML GBIF C. calcarata', y=1, pad = 2)
 ax1[0,1].bar(gbif_calcarata.index, gbif_calcarata.tolist(), color='brown')
-ax1[0,1].bar(gbif_calcarata_females.index, gbif_calcarata_females.tolist(), color='gray') #overlay ust the female data
+###################ax1[0,1].bar(gbif_calcarata_females.index, gbif_calcarata_females.tolist(), color='gray') #overlay ust the female data
 
 
 #add C. dupla to Figure 2
