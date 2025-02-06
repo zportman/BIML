@@ -11,13 +11,13 @@ bee_genera = ['Agapanthinus', 'Agapostemon', 'Ancylandrena', 'Ancyloscelis', 'An
 
 
 #get mid atlantic bees dataset. no filtering needed.
-midatl = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+midatl = pd.read_csv("data/1OccurrenceLevel_AllBees.csv", sep=',', on_bad_lines='skip', index_col=False, dtype='unicode')
 print(midatl.head())
 
 
 #get anthropogenic bees dataset and filter
 
-anthro = pd.read_csv("data/Datos1.csv", sep=',', error_bad_lines=False, index_col=False, dtype='unicode')
+anthro = pd.read_csv("data/Datos1.csv", sep=',', on_bad_lines='skip', index_col=False, dtype='unicode')
 
 #filter out everything that isn't in a bee genus  
 anthro = anthro[anthro['Genus'].isin(bee_genera)] 
@@ -63,7 +63,7 @@ print (trying, len(trying), "number in both mid-atlantic and anthro")
 #now do BIML
 
 #here is the simple gbif download, which is avaiable at https://doi.org/10.15468/dl.7kz274
-allbees = pd.read_csv("data/0011366-231120084113126_simple.csv", sep='\t', error_bad_lines=False, index_col=False, dtype='unicode') #this is the 2023 new data #old
+allbees = pd.read_csv("data/0011366-231120084113126_simple.csv", sep='\t', on_bad_lines='skip', index_col=False, dtype='unicode') #this is the 2023 new data #old
 
 
 
@@ -148,7 +148,8 @@ print("all done")
 #now graph
 #now graph
 import matplotlib.pyplot as plt
-from matplotlib_venn import venn3
+from matplotlib_venn import venn3, venn3_circles
+from matplotlib_venn import venn3_unweighted 
 
 set1 = set(['A', 'B', 'C'])
 set1 = set(anthro['IDs'])
@@ -162,7 +163,37 @@ set3 = set(['A', 'E', 'F'])
 set3 = set(allbees['catalogNumber'])
 
 
-venn3([set1, set2, set3], ('Anthropogenic', 'Mid-Atlantic', 'GBIF'))
+plt.figure(figsize=(15,15))
 
+#venn3([set1, set2, set3], ('Anthropogenic', 'Mid-Atlantic', 'GBIF'))
+
+#venn3_unweighted([set1, set2, set3], ('Anthropogenic', 'Mid-Atlantic', 'GBIF'))
+venn3_unweighted([set1, set2, set3], 
+                 set_labels=('Anthropogenic', 'Mid-Atlantic', 'GBIF'),
+                 subset_areas = (0.5,0.5,1,8,4,3,3))
+venn3_circles((0.5,0.5,1,8,4,3,3)) #ad outlines
+
+
+#first is antho unique, should be 1
+#second is mid-atlantic unique, should be 2
+#third is antrho-midoverlap, should be 1
+#fourth is GBIF standalong, should be 10
+#fifth is anthro gbif overlap, try 3
+
+#seventh is all overlap
 
 plt.show()
+
+"""
+from BioVenn import *
+
+biovenn = draw_venn(list(set1), list(set2), list(set3), xtitle="Anthropogenic", ytitle="Mid-Atlantic", ztitle="GBIF", title="", subtitle="", nrtype="abs", output="svg")
+
+from venn import venn
+plt.figure(figsize=(10,10))
+
+
+venn({"Anthropogenic":set1,"Mid-Atlantic":set2,"GBIF":set3},cmap=["red","green","blue"])
+plt.show()
+
+"""
