@@ -1,3 +1,7 @@
+This is the code for the paper "Big data, changing taxonomy, and ghost records: permanent preservation of collected specimens is essential for insect monitoring" by Portman et al. (2025) published in the Annals of the Entomological Society of America
+
+Link to paper: https://doi.org/10.1093/aesa/saaf023
+
 Program files:
 - Figure-1-2025-TOTALS.py - Creates the figures for the manuscript, plotting the records over time for the total number and control species (Figure 1), Ceratina species (Figure 2), Lasioglossum species (Figure 3), the often misidentified species (Figure 4), and the estimate invalid records (Figure 5). 
 - BIML_Analyzer-clean-2025.py - Automatically generates states of pre- and post-2010 records, and also calculates the number of estimated invalid records. Does this for the three datasets separately. 
